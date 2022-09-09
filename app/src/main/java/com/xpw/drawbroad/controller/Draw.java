@@ -17,7 +17,7 @@ public interface Draw {
      * 5、裁剪
      */
 
-    public void setBG();
+    public void setBG(String path, int w, int h);
 
     public void onDraw();
 

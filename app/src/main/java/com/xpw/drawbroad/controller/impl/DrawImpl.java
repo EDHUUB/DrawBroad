@@ -1,6 +1,9 @@
 package com.xpw.drawbroad.controller.impl;
 
+import android.graphics.BitmapFactory;
+
 import com.xpw.drawbroad.controller.Draw;
+import com.xpw.drawbroad.pojo.BGBitmap;
 
 /**
  * @author sunkai
@@ -9,7 +12,10 @@ import com.xpw.drawbroad.controller.Draw;
  */
 public class DrawImpl implements Draw {
     @Override
-    public void setBG() {
+    public void setBG(String path, int w, int h) {
+
+        BGBitmap bgBitmap = new BGBitmap();
+        bgBitmap.setBgBitmap(bgBitmap.convertToBitmap(path,w,h));
 
     }
 
