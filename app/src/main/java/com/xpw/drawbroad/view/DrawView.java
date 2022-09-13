@@ -14,7 +14,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.xpw.drawbroad.R;
+import com.xpw.drawbroad.controller.Draw;
+import com.xpw.drawbroad.controller.impl.DrawImpl;
 import com.xpw.drawbroad.pojo.BGBitmap;
+import com.xpw.drawbroad.pojo.DoublePath;
+import com.xpw.drawbroad.pojo.DoublePathList;
+import com.xpw.drawbroad.pojo.DrawBitmap;
 import com.xpw.drawbroad.pojo.MyPaint;
 
 /**
@@ -28,10 +33,13 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
     private BGBitmap bgBitmap;
     private Resources resources;
     private MyPaint myPaint = new MyPaint();
+    private Draw drawControl = new DrawImpl();
+    private Canvas canvas;
+    private DoublePath doublePath;
+    private DoublePathList doublePathList;
+    private DrawBitmap drawBitmap;
 
     private Rect mSrcRect = new Rect(0, 0, this.getWidth(), this.getHeight());
-
-    private Canvas canvas;
 
 
     public DrawView(Context context, AttributeSet attrs) {
@@ -70,6 +78,10 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        return false;
+
+        drawControl.setPaint(myPaint);
+
+        switch ()
+        return true;
     }
 }

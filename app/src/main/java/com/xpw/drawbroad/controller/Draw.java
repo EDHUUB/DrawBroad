@@ -3,6 +3,8 @@ package com.xpw.drawbroad.controller;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.xpw.drawbroad.pojo.BGBitmap;
 import com.xpw.drawbroad.pojo.DoublePath;
@@ -28,7 +30,15 @@ public interface Draw {
 
     public void setBG(Resources resources, int resId, int w, int h, BGBitmap bgBitmap);
 
-    public void onDraw(MyPaint myPaint, DoublePath doublePath, Canvas canvas, DrawBitmap drawBitmap);
+    public void setPaint(MyPaint myPaint);
+
+    public void onDraw(MyPaint myPaint,  Canvas canvas, View v, MotionEvent event);
+
+    public void saveDoublePath();
+
+    public void drawDoublePath();
+
+    public void removeDoublePath();
 
     public void drawAll(MyPaintList myPaintList,DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap);
 

@@ -1,6 +1,8 @@
 package com.xpw.drawbroad.pojo;
 
-import java.nio.file.Path;
+import android.graphics.Path;
+import android.view.MotionEvent;
+
 
 import lombok.Data;
 
@@ -19,4 +21,16 @@ public class DoublePath {
     private float actualY;
     private float slowX;
     private float slowY;
+
+    public void initPath(int id, MotionEvent event) {
+        this.id = id;
+        this.slowX = event.getX(id);
+        this.actualX = event.getX(id);
+        this.slowY = event.getY(id);
+        this.actualY = event.getY(id);
+        this.slowPath = new Path();
+        this.slowPath.moveTo(slowX, slowY);
+        this.actualPath = new Path();
+        this.actualPath.moveTo(actualX, actualY);
+    }
 }
