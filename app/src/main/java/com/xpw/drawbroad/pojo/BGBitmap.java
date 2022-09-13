@@ -3,8 +3,9 @@ package com.xpw.drawbroad.pojo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import com.xpw.drawbroad.controller.impl.DrawImpl;
 
 import java.lang.ref.WeakReference;
 
@@ -18,12 +19,13 @@ import lombok.NoArgsConstructor;
  * @read happy
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class BGBitmap {
+@AllArgsConstructor
+public class BGBitmap  {
 
     private static final String TAG = "decodeBitmapFromRes";
-    private Bitmap bgBitmap;
+    private Bitmap bgBitmap ;
+    private DrawImpl draw = new DrawImpl();
 
     public Bitmap convertToBitmap(String path, int w, int h) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -48,44 +50,51 @@ public class BGBitmap {
         return Bitmap.createScaledBitmap(weak.get(), w, h, true);
     }
 
-    // 从res中加载bitmap
-    public void decodeBitmapFromRes(Resources res, int resId,
-                                      int requestWidth,
-                                      int requestHeight) {
-        Log.d(TAG, "decodeBitmapFromRes: 0");
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        Log.d(TAG, "decodeBitmapFromRes: 0");
-
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, options);
-
-        //设置采样率
-        options.inSampleSize = calculateInSampleSize(options, requestWidth, requestHeight);
-
-        options.inJustDecodeBounds = false;
-
-        bgBitmap = BitmapFactory.decodeResource(res, resId, options);
-
+    public void setBG(Resources resources, int resId, int w, int h) {
+        Log.d(TAG, "setBG: 234423442342");
+        draw.setBG(resources, resId, w, h, this);
+        Log.d(TAG, "setBG: "+this.toString());
     }
 
-    //计算采样率
-    private int calculateInSampleSize(BitmapFactory.Options options,
-                                      int requestWidth,
-                                      int requestHeight) {
-        int outWidth = options.outWidth;
-        int outHeight = options.outHeight;
 
-        int inSampleSize = 1;
-
-        if (outHeight > requestHeight || outWidth > requestWidth) {
-            int halfHeight = outHeight /2;
-            int halfWidth = outWidth / 2;
-
-            while ((halfHeight / inSampleSize) >= requestHeight
-                    && (halfWidth / inSampleSize) >= requestWidth) {
-                inSampleSize *= 2;
-            }
-        }
-        return inSampleSize;
-    }
+//    // 从res中加载bitmap
+//    public void decodeBitmapFromRes(Resources res, int resId,
+//                                    int requestWidth,
+//                                    int requestHeight, BGBitmap bgBitmap) {
+//        Log.d(TAG, "decodeBitmapFromRes: 0");
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        Log.d(TAG, "decodeBitmapFromRes: 0");
+//
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeResource(res, resId, options);
+//
+//        //设置采样率
+//        options.inSampleSize = calculateInSampleSize(options, requestWidth, requestHeight);
+//
+//        options.inJustDecodeBounds = false;
+//
+//        this.bgBitmap = BitmapFactory.decodeResource(res, resId, options);
+//
+//    }
+//
+//    //计算采样率
+//    private int calculateInSampleSize(BitmapFactory.Options options,
+//                                      int requestWidth,
+//                                      int requestHeight) {
+//        int outWidth = options.outWidth;
+//        int outHeight = options.outHeight;
+//
+//        int inSampleSize = 1;
+//
+//        if (outHeight > requestHeight || outWidth > requestWidth) {
+//            int halfHeight = outHeight /2;
+//            int halfWidth = outWidth / 2;
+//
+//            while ((halfHeight / inSampleSize) >= requestHeight
+//                    && (halfWidth / inSampleSize) >= requestWidth) {
+//                inSampleSize *= 2;
+//            }
+//        }
+//        return inSampleSize;
+//    }
 }

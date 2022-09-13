@@ -18,4 +18,5 @@ import lombok.NoArgsConstructor;
 public class DoublePathList {
 
     private List<DoublePath> doublePathList = new ArrayList<>();
+    private List<DoublePath> preDoublePathList = new ArrayList<>();
 }

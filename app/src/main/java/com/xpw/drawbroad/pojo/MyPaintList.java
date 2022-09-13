@@ -18,5 +18,6 @@ import lombok.NoArgsConstructor;
 public class MyPaintList {
 
     private List<MyPaint> myPaintList = new ArrayList<>();
+    private List<MyPaint> preMyPaintList = new ArrayList<>();
 
 }

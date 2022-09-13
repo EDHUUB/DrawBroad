@@ -1,6 +1,15 @@
 package com.xpw.drawbroad.controller;
 
+import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.Paint;
+
+import com.xpw.drawbroad.pojo.BGBitmap;
+import com.xpw.drawbroad.pojo.DoublePath;
+import com.xpw.drawbroad.pojo.DoublePathList;
+import com.xpw.drawbroad.pojo.DrawBitmap;
+import com.xpw.drawbroad.pojo.MyPaint;
+import com.xpw.drawbroad.pojo.MyPaintList;
 
 /**
  * @author sunkai
@@ -17,9 +26,11 @@ public interface Draw {
      * 5、裁剪
      */
 
-    public void setBG(String path, int w, int h);
+    public void setBG(Resources resources, int resId, int w, int h, BGBitmap bgBitmap);
 
-    public void onDraw();
+    public void onDraw(MyPaint myPaint, DoublePath doublePath, Canvas canvas, DrawBitmap drawBitmap);
+
+    public void drawAll(MyPaintList myPaintList,DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap);
 
     public void followPoint();
 

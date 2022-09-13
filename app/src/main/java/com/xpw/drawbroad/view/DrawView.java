@@ -2,11 +2,7 @@ package com.xpw.drawbroad.view;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,7 +16,6 @@ import androidx.annotation.NonNull;
 import com.xpw.drawbroad.R;
 import com.xpw.drawbroad.pojo.BGBitmap;
 import com.xpw.drawbroad.pojo.MyPaint;
-import com.xpw.drawbroad.pojo.MyPaintList;
 
 /**
  * @author sunkai
@@ -30,7 +25,7 @@ import com.xpw.drawbroad.pojo.MyPaintList;
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener {
 
     private static final String TAG = "SurfaceView";
-    private BGBitmap bgBitmap ;
+    private BGBitmap bgBitmap;
     private Resources resources;
     private MyPaint myPaint = new MyPaint();
 
@@ -49,15 +44,15 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     /**
      * 初始化画板背景、画笔
+     *
      * @param holder
      */
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
 
         bgBitmap = new BGBitmap();
-
         canvas = getHolder().lockCanvas();
-        bgBitmap.decodeBitmapFromRes(resources, R.drawable.bg, this.getWidth(), this.getHeight());
+        bgBitmap.setBG(resources, R.drawable.bg, this.getWidth(), this.getHeight());
         canvas.drawBitmap(bgBitmap.getBgBitmap(), 0, 0, myPaint);
         getHolder().unlockCanvasAndPost(canvas);
 
