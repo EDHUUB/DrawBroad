@@ -15,11 +15,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class MyPaint extends Paint {
+public class MyPaint  {
 
-    private int choseColor;
-    private int choseStrokeWidth;
-    private Paint.Style choseStyle;
+    private Paint paint;
     private String paintType;
 }

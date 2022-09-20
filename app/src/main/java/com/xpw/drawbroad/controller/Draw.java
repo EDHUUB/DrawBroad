@@ -1,8 +1,10 @@
 package com.xpw.drawbroad.controller;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -12,6 +14,10 @@ import com.xpw.drawbroad.pojo.DoublePathList;
 import com.xpw.drawbroad.pojo.DrawBitmap;
 import com.xpw.drawbroad.pojo.MyPaint;
 import com.xpw.drawbroad.pojo.MyPaintList;
+import com.xpw.drawbroad.tool.HalfBessel;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author sunkai
@@ -32,13 +38,18 @@ public interface Draw {
 
     public void setPaint(MyPaint myPaint);
 
-    public void onDraw(MyPaint myPaint,  Canvas canvas, View v, MotionEvent event);
+    public void setDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList, DrawBitmap drawBitmap, Map<Integer,DoublePath> pathMap);
 
-    public void saveDoublePath();
+    public void changeDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList, DrawBitmap drawBitmap, Map<Integer,DoublePath> pathMap,HalfBessel halfBessel,MyPaint myPaint);
 
-    public void drawDoublePath();
+    public void saveDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList,Map<Integer, DoublePath> pathMap);
 
-    public void removeDoublePath();
+    public void removeDoublePath(MotionEvent event, Map<Integer, DoublePath> pathMap);
+
+
+    public void clearPathMap(Map<Integer,DoublePath> pathMap);
+
+    public List<Path> drawDoublePath(Map<Integer,DoublePath> pathMap,Canvas canvas , DrawBitmap drawBitmap, BGBitmap bgBitmap, MyPaint myPaint);
 
     public void drawAll(MyPaintList myPaintList,DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap);
 

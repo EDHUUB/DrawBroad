@@ -15,7 +15,7 @@ import lombok.Data;
 public class DoublePath {
 
     private int id;
-    private Path actualPath;
+    private Path actualPath ;
     private Path slowPath;
     private float actualX;
     private float actualY;
