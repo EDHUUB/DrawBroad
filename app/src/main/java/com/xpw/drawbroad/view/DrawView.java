@@ -101,10 +101,13 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
                     bitmapCache = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
                     Canvas canvas1 = new Canvas(bitmapCache);
                     drawControl.setBG(getResources(), R.drawable.bg, canvas.getWidth(), getHeight(), bgBitmap);
+
                     canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
                     drawControl.drawDoublePath(pathMap, canvas1, drawBitmap, bgBitmap, myPaint);
                     canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
                     canvas.drawCircle(1200,100,50,myPaint.getPaint());
+                    drawControl.drawAll(myPaintList,doublePathList,canvas1,drawBitmap);
+                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
 
 
                 } else {
@@ -114,6 +117,9 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
                     canvas1.drawBitmap(drawBitmap.getDrawBitmap(),0,0,myPaint.getPaint());
                     canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
                     canvas.drawCircle(1200,100,50,myPaint.getPaint());
+                    drawControl.drawAll(myPaintList,doublePathList,canvas1,drawBitmap);
+                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
+
                 }
 
             } catch (Exception e) {
@@ -136,11 +142,12 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
         drawBitmap.setDrawBitmap(Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
         bgBitmap = new BGBitmap();
         bgBitmap.setBgBitmap(Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
-        myPaint = new MyPaint();
         drawControl = new DrawImpl();
         pathMap = new HashMap<>();
         doublePath = new DoublePath();
         doublePathList = new DoublePathList();
+        myPaint = new MyPaint();
+        myPaintList = new MyPaintList();
         drawControl.setPaint(myPaint);
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
@@ -164,11 +171,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
                 break;
 
             case MotionEvent.ACTION_POINTER_UP:
-                drawControl.saveDoublePath(event, doublePath, doublePathList, pathMap);
+                drawControl.saveDoublePath(event, doublePath,myPaint, doublePathList,myPaintList, pathMap);
                 drawControl.removeDoublePath(event, pathMap);
                 break;
             case MotionEvent.ACTION_UP:
-                drawControl.saveDoublePath(event, doublePath, doublePathList, pathMap);
+                drawControl.saveDoublePath(event, doublePath,myPaint, doublePathList,myPaintList, pathMap);
                 drawControl.removeDoublePath(event, pathMap);
                 drawControl.clearPathMap(pathMap);
                 break;

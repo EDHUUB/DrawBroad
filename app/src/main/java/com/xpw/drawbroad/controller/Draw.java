@@ -42,7 +42,7 @@ public interface Draw {
 
     public void changeDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList, DrawBitmap drawBitmap, Map<Integer,DoublePath> pathMap,HalfBessel halfBessel,MyPaint myPaint);
 
-    public void saveDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList,Map<Integer, DoublePath> pathMap);
+    public void saveDoublePath(MotionEvent event, DoublePath doublePath,MyPaint myPaint, DoublePathList doublePathList,MyPaintList myPaintList,Map<Integer, DoublePath> pathMap);
 
     public void removeDoublePath(MotionEvent event, Map<Integer, DoublePath> pathMap);
 

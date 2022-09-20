@@ -36,7 +36,7 @@ public class DrawImpl implements Draw {
 
 
     @Override
-    public void setBG(Resources resources, int resId, int w, int h, BGBitmap bgBitmap ) {
+    public void setBG(Resources resources, int resId, int w, int h, BGBitmap bgBitmap) {
 //        bgBitmap.setBgBitmap(bgBitmap.convertToBitmap(path, w, h));
         this.decodeBitmapFromRes(resources, resId, w, h, bgBitmap);
     }
@@ -69,7 +69,7 @@ public class DrawImpl implements Draw {
     public void setDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList, DrawBitmap drawBitmap, Map<Integer, DoublePath> pathMap) {
         int pointerCount = event.getPointerCount();
         for (int i = 0; i < pointerCount; i++) {
-            Log.d(TAG, "setDoublePath: event.getPointerId(i)= "+event.getPointerId(i));
+            Log.d(TAG, "setDoublePath: event.getPointerId(i)= " + event.getPointerId(i));
             if (!pathMap.containsKey(event.getPointerId(i))) {
                 doublePath = new DoublePath();
                 doublePath.initPath(i, event);
@@ -95,7 +95,7 @@ public class DrawImpl implements Draw {
         if (!pathMap.isEmpty()) {
             canvasTemp = new Canvas(drawBitmap.getDrawBitmap());
             for (Map.Entry<Integer, DoublePath> m : pathMap.entrySet()) {
-                halfBessel.fixPath(event, m.getValue(),i);
+                halfBessel.fixPath(event, m.getValue(), i);
                 canvasTemp.drawPath(m.getValue().getSlowPath(), myPaint.getPaint());
                 i++;
             }
@@ -103,9 +103,11 @@ public class DrawImpl implements Draw {
     }
 
     @Override
-    public void saveDoublePath(MotionEvent event, DoublePath doublePath, DoublePathList doublePathList, Map<Integer, DoublePath> pathMap) {
+    public void saveDoublePath(MotionEvent event, DoublePath doublePath,MyPaint myPaint, DoublePathList doublePathList,MyPaintList myPaintList, Map<Integer, DoublePath> pathMap) {
         int id = event.getPointerId(event.getActionIndex());
         doublePathList.getDoublePathList().add(pathMap.get(id));
+        myPaintList.getMyPaintList().add(myPaint);
+
     }
 
 
@@ -120,7 +122,7 @@ public class DrawImpl implements Draw {
     public List<Path> drawDoublePath(Map<Integer, DoublePath> pathMap, Canvas canvas, DrawBitmap drawBitmap, BGBitmap bgBitmap, MyPaint myPaint) {
         myPaint.getPaint().setAntiAlias(true);
         myPaint.getPaint().setColor(Color.YELLOW);
-        if (!pathMap.isEmpty()){
+        if (!pathMap.isEmpty()) {
             for (Map.Entry<Integer, DoublePath> map : pathMap.entrySet()) {
                 canvas.drawPath(map.getValue().getSlowPath(), myPaint.getPaint());
 //                canvas.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
@@ -138,16 +140,28 @@ public class DrawImpl implements Draw {
         pathMap.clear();
     }
 
-
+    /**
+     * 1、清空drawBitMap
+     * 2、新建canvas1，绑定drawBitmap
+     * 3、遍历myPaintList与doublePathList重绘
+     *
+     * @param myPaintList
+     * @param doublePathList
+     * @param canvas
+     * @param drawBitmap
+     */
     @Override
     public void drawAll(MyPaintList myPaintList, DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap) {
-
-
-        //清空画布
-        //绘制背景
-        //绘制绘画内容
-
-
+        if (drawBitmap.getDrawBitmap() != null) {
+//            drawBitmap.getDrawBitmap().recycle();
+            drawBitmap.setDrawBitmap( Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
+        }
+        Canvas canvas1 = new Canvas(drawBitmap.getDrawBitmap());
+        int i = 0;
+        for (DoublePath d : doublePathList.getDoublePathList()) {
+            canvas1.drawPath(d.getSlowPath(), myPaintList.getMyPaintList().get(i).getPaint());
+            i++;
+        }
     }
 
     @Override
@@ -170,7 +184,7 @@ public class DrawImpl implements Draw {
     public void decodeBitmapFromRes(Resources res, int resId,
                                     int requestWidth,
                                     int requestHeight,
-                                    BGBitmap bgBitmap ) {
+                                    BGBitmap bgBitmap) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(res, resId, options);
