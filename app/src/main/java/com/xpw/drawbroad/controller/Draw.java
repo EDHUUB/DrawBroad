@@ -46,10 +46,14 @@ public interface Draw {
 
     public void removeDoublePath(MotionEvent event, Map<Integer, DoublePath> pathMap);
 
+    public void revokeDoublePath(DoublePathList doublePathList,MyPaintList myPaintList);
+
+    public void forwardDoublePath(DoublePathList doublePathList,MyPaintList myPaintList);
+
 
     public void clearPathMap(Map<Integer,DoublePath> pathMap);
 
-    public List<Path> drawDoublePath(Map<Integer,DoublePath> pathMap,Canvas canvas , DrawBitmap drawBitmap, BGBitmap bgBitmap, MyPaint myPaint);
+    public List<Path> drawDoublePath(Map<Integer,DoublePath> pathMap,Canvas canvas , DrawBitmap drawBitmap, MyPaint myPaint);
 
     public void drawAll(MyPaintList myPaintList,DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap);
 

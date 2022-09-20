@@ -8,6 +8,8 @@ import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -52,16 +54,19 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
     private Draw drawControl;
     private boolean mIsDrawing;
     private final HalfBessel halfBessel = new HalfBessel();
-    public Boolean isSetBG;
+    private Boolean isSetBG;
+    private Boolean isRevoke;
+    private Boolean isForward;
     private Bitmap bitmapCache;
 
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
         getHolder().addCallback(this);
-        getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//        getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        this.setZOrderMediaOverlay(true);
+        this.getHolder().setFormat(PixelFormat.TRANSPARENT);
         setOnTouchListener(this);
-
     }
 
 
@@ -91,65 +96,100 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public void run() {
-        while (mIsDrawing) {
-            try {
+
+            while (mIsDrawing) {
                 canvas = surfaceHolder.lockCanvas();
-                //todo:绘制操作
-//                canvas.drawColor(Color.GRAY);
+                Paint paint = new Paint();
+                paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
-                if (bitmapCache == null) {
-                    bitmapCache = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-                    Canvas canvas1 = new Canvas(bitmapCache);
-                    drawControl.setBG(getResources(), R.drawable.bg, canvas.getWidth(), getHeight(), bgBitmap);
+                try {
+                    if (bitmapCache == null) {
+                        bitmapCache = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas1 = new Canvas(bitmapCache);
+                        if (!isSetBG) {
+                            drawControl.setBG(getResources(), R.drawable.bg, canvas.getWidth(), getHeight(), bgBitmap);
+                            canvas1.drawBitmap(bgBitmap.getBgBitmap(), 0, 0, myPaint.getPaint());
+                        }
 
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
-                    drawControl.drawDoublePath(pathMap, canvas1, drawBitmap, bgBitmap, myPaint);
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
-                    canvas.drawCircle(1200,100,50,myPaint.getPaint());
-                    drawControl.drawAll(myPaintList,doublePathList,canvas1,drawBitmap);
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
+//                        if (!pathMap.isEmpty()) {
+//                            Log.d(TAG, "run: 2");
+//                            myPaint.getPaint().setColor(Color.WHITE);
+//                            drawControl.drawDoublePath(pathMap, canvas1, drawBitmap, myPaint);
+//                            canvas1.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
+//                        }
+
+//                    if (isRevoke) {
+//                        bitmapCache = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+//                        canvas1 = new Canvas(bitmapCache);
+//                        drawControl.revokeDoublePath(doublePathList, myPaintList);
+//                        drawControl.drawAll(myPaintList, doublePathList, canvas, drawBitmap);
+//                        canvas1.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
+//                    }
 
 
-                } else {
-                    Canvas canvas1 = new Canvas(bitmapCache);
-                    canvas1.drawBitmap(bgBitmap.getBgBitmap(), 0, 0, myPaint.getPaint());
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
-                    canvas1.drawBitmap(drawBitmap.getDrawBitmap(),0,0,myPaint.getPaint());
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
-                    canvas.drawCircle(1200,100,50,myPaint.getPaint());
-                    drawControl.drawAll(myPaintList,doublePathList,canvas1,drawBitmap);
-                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
+                    } else {
+                        Canvas canvas1 = new Canvas(bitmapCache);
+//                        canvas1.drawPaint(paint);
 
+                        if (!isSetBG) {
+                            canvas1.drawPaint(paint);
+                            drawControl.setBG(getResources(), R.drawable.bg, canvas.getWidth(), getHeight(), bgBitmap);
+                            canvas1.drawBitmap(bgBitmap.getBgBitmap(), 0, 0, myPaint.getPaint());
+                            isSetBG = true;
+                        }
+
+//                        if (!pathMap.isEmpty()) {
+//                            canvas1.drawPaint(paint);
+//                            Log.d(TAG, "run: 2");
+//                            myPaint.getPaint().setColor(Color.WHITE);
+//                            drawControl.drawDoublePath(pathMap, canvas1, drawBitmap, myPaint);
+//                            canvas1.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
+//                        }
+
+//                    if (isRevoke) {
+//                        bitmapCache = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+//                        canvas1 = new Canvas(bitmapCache);
+//                        drawControl.revokeDoublePath(doublePathList, myPaintList);
+//                        drawControl.drawAll(myPaintList, doublePathList, canvas, drawBitmap);
+//                        canvas1.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
+//                        isRevoke = false;
+//                    }
+
+                    }
+                    canvas.drawPaint(paint);
+                    canvas.drawBitmap(bitmapCache, 0, 0, myPaint.getPaint());
+                canvas.drawCircle(1200, 100, 50, myPaint.getPaint());
+                } catch (Exception e) {
+                    Log.e(TAG, "run: e ", e);
+                } finally {
+                    if (canvas != null) {
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                    }
                 }
 
-            } catch (Exception e) {
-                Log.e(TAG, "run: e ", e);
-            } finally {
-                if (canvas != null) {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
-                }
             }
 
-        }
     }
 
     private void initView() {
 
-        isSetBG = false;
         surfaceHolder = getHolder();
         canvas = surfaceHolder.lockCanvas();
         drawBitmap = new DrawBitmap();
         drawBitmap.setDrawBitmap(Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
         bgBitmap = new BGBitmap();
         bgBitmap.setBgBitmap(Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
-        drawControl = new DrawImpl();
         pathMap = new HashMap<>();
         doublePath = new DoublePath();
         doublePathList = new DoublePathList();
         myPaint = new MyPaint();
         myPaintList = new MyPaintList();
+        drawControl = new DrawImpl();
         drawControl.setPaint(myPaint);
         surfaceHolder.unlockCanvasAndPost(canvas);
+        isSetBG = false;
+        isForward = false;
+        isRevoke = false;
     }
 
     /**
@@ -171,15 +211,23 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Vie
                 break;
 
             case MotionEvent.ACTION_POINTER_UP:
-                drawControl.saveDoublePath(event, doublePath,myPaint, doublePathList,myPaintList, pathMap);
+                drawControl.saveDoublePath(event, doublePath, myPaint, doublePathList, myPaintList, pathMap);
                 drawControl.removeDoublePath(event, pathMap);
                 break;
             case MotionEvent.ACTION_UP:
-                drawControl.saveDoublePath(event, doublePath,myPaint, doublePathList,myPaintList, pathMap);
+                drawControl.saveDoublePath(event, doublePath, myPaint, doublePathList, myPaintList, pathMap);
                 drawControl.removeDoublePath(event, pathMap);
                 drawControl.clearPathMap(pathMap);
                 break;
         }
+    }
+
+    public void revoke() {
+        isRevoke = true;
+    }
+
+    public void forwardDoublePath() {
+        isForward = true;
     }
 
 }

@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.xpw.drawbroad.controller.Draw;
 import com.xpw.drawbroad.pojo.BGBitmap;
@@ -30,7 +29,6 @@ import java.util.Map;
  */
 public class DrawImpl implements Draw {
 
-    private Canvas canvasTemp;
 
     private static final String TAG = "DrawImpl";
 
@@ -51,10 +49,9 @@ public class DrawImpl implements Draw {
         myPaint.getPaint().setStyle(Paint.Style.STROKE);
         myPaint.getPaint().setStrokeCap(Paint.Cap.ROUND);
         myPaint.getPaint().setStrokeJoin(Paint.Join.ROUND);
-        myPaint.getPaint().setAlpha(100);
+        myPaint.getPaint().setAlpha(50);
         myPaint.getPaint().setFilterBitmap(true);
-        Log.d(TAG, "setPaint: 001");
-
+//todo:抗锯齿问题
     }
 
 
@@ -93,7 +90,7 @@ public class DrawImpl implements Draw {
                                  Map<Integer, DoublePath> pathMap, HalfBessel halfBessel, MyPaint myPaint) {
         int i = 0;
         if (!pathMap.isEmpty()) {
-            canvasTemp = new Canvas(drawBitmap.getDrawBitmap());
+            Canvas canvasTemp = new Canvas(drawBitmap.getDrawBitmap());
             for (Map.Entry<Integer, DoublePath> m : pathMap.entrySet()) {
                 halfBessel.fixPath(event, m.getValue(), i);
                 canvasTemp.drawPath(m.getValue().getSlowPath(), myPaint.getPaint());
@@ -103,7 +100,7 @@ public class DrawImpl implements Draw {
     }
 
     @Override
-    public void saveDoublePath(MotionEvent event, DoublePath doublePath,MyPaint myPaint, DoublePathList doublePathList,MyPaintList myPaintList, Map<Integer, DoublePath> pathMap) {
+    public void saveDoublePath(MotionEvent event, DoublePath doublePath, MyPaint myPaint, DoublePathList doublePathList, MyPaintList myPaintList, Map<Integer, DoublePath> pathMap) {
         int id = event.getPointerId(event.getActionIndex());
         doublePathList.getDoublePathList().add(pathMap.get(id));
         myPaintList.getMyPaintList().add(myPaint);
@@ -119,12 +116,31 @@ public class DrawImpl implements Draw {
     }
 
     @Override
-    public List<Path> drawDoublePath(Map<Integer, DoublePath> pathMap, Canvas canvas, DrawBitmap drawBitmap, BGBitmap bgBitmap, MyPaint myPaint) {
+    public void revokeDoublePath(DoublePathList doublePathList, MyPaintList myPaintList) {
+        int size = doublePathList.getDoublePathList().size();
+        if (size > 0) {
+            doublePathList.getPreDoublePathList().add(doublePathList.getDoublePathList().get(size - 1));
+            doublePathList.getDoublePathList().remove(size - 1);
+        }
+    }
+
+    @Override
+    public void forwardDoublePath(DoublePathList doublePathList, MyPaintList myPaintList) {
+        int size = doublePathList.getPreDoublePathList().size();
+        if (size > 0) {
+            doublePathList.getDoublePathList().add(doublePathList.getPreDoublePathList().get(size - 1));
+            doublePathList.getPreDoublePathList().remove(size - 1);
+        }
+    }
+
+    @Override
+    public List<Path> drawDoublePath(Map<Integer, DoublePath> pathMap, Canvas canvas, DrawBitmap drawBitmap, MyPaint myPaint) {
         myPaint.getPaint().setAntiAlias(true);
         myPaint.getPaint().setColor(Color.YELLOW);
         if (!pathMap.isEmpty()) {
             for (Map.Entry<Integer, DoublePath> map : pathMap.entrySet()) {
                 canvas.drawPath(map.getValue().getSlowPath(), myPaint.getPaint());
+                Log.d(TAG, "drawDoublePath: 1"+myPaint.getPaint().getColor());
 //                canvas.drawBitmap(drawBitmap.getDrawBitmap(), 0, 0, myPaint.getPaint());
             }
         }
@@ -154,7 +170,7 @@ public class DrawImpl implements Draw {
     public void drawAll(MyPaintList myPaintList, DoublePathList doublePathList, Canvas canvas, DrawBitmap drawBitmap) {
         if (drawBitmap.getDrawBitmap() != null) {
 //            drawBitmap.getDrawBitmap().recycle();
-            drawBitmap.setDrawBitmap( Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
+            drawBitmap.setDrawBitmap(Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888));
         }
         Canvas canvas1 = new Canvas(drawBitmap.getDrawBitmap());
         int i = 0;
